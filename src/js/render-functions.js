@@ -1,26 +1,36 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-new SimpleLightbox('.some-element a', {
-  /*options*/
-});
 const galleryList = document.querySelector('.gallery');
-let galleryLib = new SimpleLightbox('.gallery a');
+let galleryLib = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+      captionDelay: 250,
+});
+
+function capitalizeFirstLetter(string) {
+  if (!string) {
+    return string;
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+
 export function createGallery(images) {
   const markup = images
     .map(image => {
-      return `<li>
-    <a href=${image.largeImageURL} title=${image.tags}>
-    <img src=${image.webformatURL} 
-    alt=${image.tags} width="450"
+       const keysToShow = ['likes', 'views', 'comments', 'downloads'];
+       const infoMarkup = keysToShow
+        .map(key =>`<p class="info-item">${capitalizeFirstLetter(key)}:<span class="info">${image[key]}</span></p>`)
+        .join('');
+      return `<li class="image-item">
+    <a href="${image.largeImageURL}" title="${image.tags}">
+    <img src="${image.webformatURL}" 
+    alt="${image.tags}"
     />
     </a>
-    <div class="gallery-img">
-    <p>${image.likes}</p>
-    <p>${image.views}</p>
-    <p>${image.comments}</p>
-    <p>${image.downloads}</p>
-     </div>
+    <div class="gallery-info">
+    ${infoMarkup}
+    </div>
     </li>`;
     })
     .join('');
